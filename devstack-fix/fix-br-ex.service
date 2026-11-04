@@ -1,0 +1,12 @@
+[Unit]
+Description=Pulihkan jaringan eksternal DevStack (br-ex)
+After=network-online.target ovs-vswitchd.service
+Wants=network-online.target ovs-vswitchd.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/fix-br-ex.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
