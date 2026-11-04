@@ -1,0 +1,21 @@
+name: Build dan uji website
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ambil kode dari repository
+        uses: actions/checkout@v4
+
+      - name: Build image Docker
+        run: docker build -t website-bram:ci ./docker-website
+
+      - name: Jalankan container dan uji halaman
+        run: |
+          docker run -d --name website -p 8080:80 website-bram:ci
+          sleep 3
+          curl -sf http://localhost:8080 | grep -i "<title>"
