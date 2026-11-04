@@ -1,0 +1,8 @@
+services:
+  website:
+    build: .
+    image: website-bram:1.1
+    container_name: website
+    ports:
+      - "8080:80"
+    restart: unless-stopped
