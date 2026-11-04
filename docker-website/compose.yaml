@@ -6,3 +6,9 @@ services:
     ports:
       - "8080:80"
     restart: unless-stopped
+
+  nginx-bawaan:
+    image: nginx:latest
+    container_name: nginx-bawaan
+    ports:
+      - "8081:80"
