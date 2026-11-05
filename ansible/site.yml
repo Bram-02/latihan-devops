@@ -1,0 +1,33 @@
+- name: Konfigurasi VM DevStack
+  hosts: devstack
+  become: true
+  tasks:
+    - name: Pasang paket alat bantu
+      ansible.builtin.apt:
+        name:
+          - htop
+          - tree
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Buat folder catatan
+      ansible.builtin.file:
+        path: /home/osadmin/dari-ansible
+        state: directory
+        owner: osadmin
+        group: osadmin
+        mode: "0755"
+
+    - name: Tulis file catatan
+      ansible.builtin.copy:
+        dest: /home/osadmin/dari-ansible/catatan.txt
+        content: "File ini dibuat oleh Ansible dari WSL milik Bram.\n"
+        owner: osadmin
+        group: osadmin
+        mode: "0644"
+
+    - name: Pastikan service fix-br-ex aktif saat booting
+      ansible.builtin.service:
+        name: fix-br-ex
+        enabled: true
