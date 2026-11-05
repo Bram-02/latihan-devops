@@ -1,0 +1,18 @@
+- name: Ubah Nova ke mode QEMU (tanpa KVM)
+  hosts: devstack
+  become: true
+  tasks:
+    - name: Set virt_type = qemu di nova-cpu.conf
+      community.general.ini_file:
+        path: /etc/nova/nova-cpu.conf
+        section: libvirt
+        option: virt_type
+        value: qemu
+        backup: true
+      notify: Restart nova-compute
+
+  handlers:
+    - name: Restart nova-compute
+      ansible.builtin.systemd:
+        name: devstack@n-cpu
+        state: restarted
