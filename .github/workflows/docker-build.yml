@@ -16,6 +16,6 @@ jobs:
 
       - name: Jalankan container dan uji halaman
         run: |
-          docker run -d --name website -p 8080:80 website-bram:ci
+          docker run -d --name website -p 8080:8080 website-bram:ci
           sleep 3
           curl -sf http://localhost:8080 | grep -i "<title>"
