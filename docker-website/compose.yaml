@@ -1,7 +1,7 @@
 services:
   website:
     build: .
-    image: website-bram:1.1
+    image: website-bram:1.2
     container_name: website
     ports:
       - "8080:80"
