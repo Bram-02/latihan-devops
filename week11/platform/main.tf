@@ -74,6 +74,7 @@ resource "helm_release" "root_app" {
       root = {
         namespace = "argocd"
         project   = "default"
+        finalizers = ["resources-finalizer.argocd.argoproj.io"]
         source = {
           repoURL        = "https://github.com/Bram-02/latihan-devops.git"
           targetRevision = "main"
@@ -97,6 +98,3 @@ resource "helm_release" "root_app" {
   depends_on = [helm_release.argocd]
 }
 
-resource "kubernetes_namespace_v1" "website_staging" {
-  metadata { name = "website-staging" }
-}
