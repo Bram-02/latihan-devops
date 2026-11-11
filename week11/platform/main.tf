@@ -54,3 +54,49 @@ resource "helm_release" "argocd" {
 
 # Lapisan 3 (Deployment, Service website) TIDAK ditulis di sini:
 # pemiliknya Argo CD, dari repository Git (satu objek, satu pemilik).
+
+variable "argocd_apps_chart_version" {
+  type    = string
+  default = "2.0.8"
+}
+
+# Bootstrap GitOps: satu Application "root" yang mengawasi folder week11/apps di Git.
+# Semua Application lain cukup ditambahkan sebagai file YAML di folder itu.
+resource "helm_release" "root_app" {
+  name       = "root-app"
+  repository = "https://argoproj.github.io/argo-helm"
+  chart      = "argocd-apps"
+  version    = var.argocd_apps_chart_version
+  namespace  = "argocd"
+
+  values = [yamlencode({
+    applications = {
+      root = {
+        namespace = "argocd"
+        project   = "default"
+        source = {
+          repoURL        = "https://github.com/Bram-02/latihan-devops.git"
+          targetRevision = "main"
+          path           = "week11/apps"
+        }
+        destination = {
+          server    = "https://kubernetes.default.svc"
+          namespace = "argocd"
+        }
+        syncPolicy = {
+          automated = {
+            prune    = true
+            selfHeal = true
+          }
+        }
+      }
+    }
+  })]
+
+  # Application adalah CRD milik Argo CD, jadi Argo CD harus terpasang lebih dulu
+  depends_on = [helm_release.argocd]
+}
+
+resource "kubernetes_namespace_v1" "website_staging" {
+  metadata { name = "website-staging" }
+}

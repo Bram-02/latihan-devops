@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: website-staging
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Bram-02/devops-website-bram.git
+    targetRevision: main
+    path: helm/website
+    helm:
+      parameters:
+        - name: image.tag
+          value: b5b2ff071f9851086cc6a09a465743fb0b8a3718
+        - name: ingress.enabled
+          value: "false"
+        - name: replicaCount
+          value: "1"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: website-staging
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
